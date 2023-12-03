@@ -11,6 +11,13 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
+      - name: Log vars      
+        run: |
+          echo "${{secrets.CLIENTSECRET}}"
+          echo "${{secrets.SUBSCRIPTION}}"
+          echo "${{secrets.CLIENTID}}"
+          echo "${{secrets.TENANTID}}"
+          echo "${{secrets.SAS_TOKEN}}"
       - name: 'Checkout'
         uses: actions/checkout@master
       - name: 'Terraform Format'
@@ -26,7 +33,7 @@ jobs:
           tf_actions_subcommand: 'init'
           tf_actions_working_dir: './iac'
         env:
-          TF_CLI_ARGS_init: '-backend-config="sas_token=${{ secrets.SAS_TOKEN }}"'
+          TF_CLI_ARGS_init: '-backend-config="sas_token=${{secrets.SAS_TOKEN}}"'
       - name: 'Terraform Validate'
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -39,11 +46,11 @@ jobs:
           tf_actions_version: 0.12.24
           tf_actions_subcommand: 'plan'
           tf_actions_working_dir: './iac'
-          args: '-var=client_secret=${{secrets.clientSecret}} -var=sub=${{secrets.subscription}} -var=client_id=${{secrets.clientId}} -var=tenant_id=${{secrets.tenantId}}'
+          args: '-var=client_secret=${{secrets.CLIENTSECRET}} -var=sub=${{secrets.SUBSCRIPTION}} -var=client_id=${{secrets.CLIENTID}} -var=tenant_id=${{secrets.TENANTID}}'
       - name: 'Terraform Apply'
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: 0.12.24
           tf_actions_subcommand: 'apply'
           tf_actions_working_dir: './iac'
-          args: '-var=client_secret=${{secrets.clientSecret}} -var=sub=${{secrets.subscription}} -var=client_id=${{secrets.clientId}} -var=tenant_id=${{secrets. tenantId}}'
+          args: '-var=client_secret=${{secrets.CLIENTSECRET}} -var=sub=${{secrets.SUBSCRIPTION}} -var=client_id=${{secrets.CLIENTID}} -var=tenant_id=${{secrets.TENANTID}}'
